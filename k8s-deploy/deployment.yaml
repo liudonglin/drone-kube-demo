@@ -1,0 +1,20 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: drone-ci-golang-v1
+  namespace: test-ci
+spec:
+  replicas: 1
+  template:
+    metadata:
+      namespace: test-ci
+      labels:
+        app: drone-ci-golang
+        version: v1
+    spec:
+      containers:
+      - name: drone-ci-golang
+        image: xiayangqiushi/drone-ci-golang:1.0.0
+        imagePullPolicy: IfNotPresent
+        ports:
+        - containerPort: 8000

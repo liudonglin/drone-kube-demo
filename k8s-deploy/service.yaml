@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: drone-ci-golang
+  namespace: test-ci
+  labels:
+    app: drone-ci-golang
+spec:
+  type: NodePort
+  ports:
+  - port: 8000
+    name: http
+    targetPort: 8000
+  selector:
+    app: drone-ci-golang
