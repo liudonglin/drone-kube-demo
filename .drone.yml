@@ -1,0 +1,38 @@
+kind: pipeline
+name: default
+
+steps:
+
+- name: build
+  image: golang:1.12.5
+  commands:
+  - go test
+  - go build -o ci-test
+  - ls
+
+- name: publish
+  image: plugins/docker
+  settings:
+    username:
+      from_secret: dockerhub_username
+    password:
+      from_secret: dockerhub_password
+    #insecure: true
+    repo: xiayangqiushi/drone-ci-golang
+    #registry: harbor.jwell56.com
+    dockerfile: ./Dockerfile
+    tags:
+      - 1.0.0
+
+- name: deploy
+  image: vallard/drone-kube
+  environment:
+    KUBE_SERVER:
+      from_secret: kube_api_server
+    KUBE_TOKEN:
+      from_secret: kube_token
+    KUBE_CA:
+      from_secret: kube_ca
+  settings:
+    template: k8s-deploy/deployment.yaml
+    namespace: test-ci
